@@ -1,0 +1,59 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Sistema Reservatorios</title>
+	   	<script src="https://code.highcharts.com/highcharts.js"></script>
+	</head>
+    <body>
+    		<div>
+            <select name="name_list" form="select_form">
+                {% for q in query_reservatorio_all %}
+                    <option value={{ q.id }}>
+                        {{ q.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <select name="date_list" form="select_date" multiple size="10">
+                {% for h in query_vazao %}
+                    <option value={{ h.id }}>
+                        {{ h.data }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <br><br>
+        <form method="POST" id="select_form">
+            {% csrf_token %}
+            <input type="submit" value="Buscar Reservatorio">
+        </form>
+
+        <form action="/graph_vazao/" method="POST" id="select_date">
+            {% csrf_token %}
+            <input type="submit" value="Buscar Historico">
+        </form>
+
+        <form action="/graph_historico_vazao/" method="POST" id="historico_vazao">
+            {% csrf_token %}
+            <input type="submit" value="Historico Vazao">
+        </form>
+
+
+
+        <div id={{ chartID|safe }} class="chart" style="height: 100px; width: 300px"></div>
+		<script>
+			var chart_id = {{ chartID|safe }}
+			var series = {{ series|safe }}
+			var title = {{ title|safe }}
+			var xAxis = {{ xAxis|safe }}
+			var yAxis = {{ yAxis|safe }}
+			var chart = {{ chart|safe }}
+		</script>
+		<div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
+		<script type="text/javascript" src="{% static 'app/chart.js' %}"></script>
+
+    </body>
+</html>
