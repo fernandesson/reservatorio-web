@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_reservatorio',
         'USER': 'root',
-        'PASSWORD': 'qweqwe',
+        'PASSWORD': 'deha',
     }
 }
 

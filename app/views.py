@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import csv
 
-from .models import Reservatorio, HistoricoVazoes, HistoricoEvaporacao
+from .models import Reservatorio, HistoricoVazoes, HistoricoEvaporacao, Volume
 
 
 def index(request):
@@ -20,23 +20,34 @@ def index(request):
 def download(request):
 	""" Gera um .csv com os dados do reservatorio selecionado
 	"""
-	if request.method == 'POST':							# Verifica se houve requisição
-		id = request.POST.get('name_list')					# Pega o reservatório selecionado.
+	if request.method == 'POST':									# Verifica se houve requisição
+		id = request.POST.get('name_list')							# Pega o reservatório selecionado.
 	else:
-		id = 1												# Id padrão para abertura da página.
+		id = 1														# Id padrão para abertura da página.
 	
 	query_reservatorio = Reservatorio.objects.filter(id=id)			# Pega o reservatório da id selecionada.
 	query_vazao = HistoricoVazoes.objects.filter(reservatorio=id)	# Pega o reservatório da id selecionada.
-
+	query_evap = HistoricoEvaporacao.objects.filter(reservatorio=id)
+	query_volume = Volume.objects.filter(reservatorio=id)
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="vazao.csv"'
 	
 	writer = csv.writer(response)
-	writer.writerow([query_reservatorio[0].nome])
+	writer.writerow([query_reservatorio[0].nome, "Dados da Evaporação e Volume no fim do arquivo"])
 	writer.writerow(["Data", 'Vazao'])
 	for q in query_vazao:
 		writer.writerow([q.data, q.vazao])
-		
+
+	writer.writerow([''])
+	writer.writerow(['Mes', 'Evaporação'])
+	for q in query_evap:
+		writer.writerow([q.mes, q.evaporacao])
+
+	writer.writerow([''])
+	writer.writerow(['Volume Atual', 'Volume Total'])
+	for q in query_volume:
+		writer.writerow([q.atual, q.total])
+
 	return response
 
 
