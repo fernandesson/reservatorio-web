@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'sistema.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 #mysql://USER:PASSWORD@HOST:PORT/NAME
-default_dburl ='mysql://root:deha@localhost:3306/db_reservatorio'
+default_dburl ='mysql://root:deha@localhost/db_reservatorio'
 DATABASES = {'default':config('DATABASE_URL',default=default_dburl,cast=dburl),}
 
 
