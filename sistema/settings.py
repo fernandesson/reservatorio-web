@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from decouple import config
+from dj_database_url import parse as dburl
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'f)c8z#a^q9o9!&ytao3+!@1s2!9vm&1m1z)#8_6tw65ricrz31'
+SECRET_KEY = config('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG',default=False,cast=bool)
 
-ALLOWED_HOSTS = ['10.101.73.65']
+ALLOWED_HOSTS = ['reservatorio-web.herokuapp.com','localhost']
 
 
 # Application definition
@@ -74,14 +77,9 @@ WSGI_APPLICATION = 'sistema.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_reservatorio',
-        'USER': 'root',
-        'PASSWORD': 'deha',
-    }
-}
+#mysql://USER:PASSWORD@HOST:PORT/NAME
+default_dburl ='mysql://root:deha@localhost:3306/db_reservatorio'
+DATABASES = {'default':config('DATABASE_URL',default=default_dburl,cast=dburl),}
 
 
 # Password validation
@@ -121,3 +119,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
