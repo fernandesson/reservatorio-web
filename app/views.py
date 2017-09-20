@@ -2,14 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import csv
 
-from .models import Reservatorio, HistoricoVazoes, HistoricoEvaporacao, Volume
+from .models import Reservatorio, HistoricoVazao, HistoricoEvaporacao, Volume
 
 
 def index(request):
 	query_reservatorio = Reservatorio.objects.all()
 	if request.method == 'POST':
 		id_nome = request.POST.get('name_list')
-		query_vazao = HistoricoVazoes.objects.filter(reservatorio=id_nome)
+		query_vazao = HistoricoVazao.objects.filter(reservatorio=id_nome)
 		query_reservatorio = Reservatorio.objects.filter(id=id_nome)
 		nome_reservatorio = query_reservatorio[0].nome
 		return render(request, 'app/index.html', {'query_reservatorio': query_reservatorio, 'query_vazao': query_vazao})
@@ -26,7 +26,7 @@ def download(request):
 		id = 1														# Id padrão para abertura da página.
 	
 	query_reservatorio = Reservatorio.objects.filter(id=id)			# Pega o reservatório da id selecionada.
-	query_vazao = HistoricoVazoes.objects.filter(reservatorio=id)	# Pega o reservatório da id selecionada.
+	query_vazao = HistoricoVazao.objects.filter(reservatorio=id)	# Pega o reservatório da id selecionada.
 	query_evap = HistoricoEvaporacao.objects.filter(reservatorio=id)
 	query_volume = Volume.objects.filter(reservatorio=id)
 	response = HttpResponse(content_type='text/csv')
@@ -65,8 +65,8 @@ def index3(request):
 	
 	name = query_reservatorio[0].nome						# Pega o nome do reservatório.
 
-	vaz_mensal = HistoricoVazoes.getVazaoMensal(id=id)		# Retorna uma lista com a média da vazão mensal.
-	vaz_anual = HistoricoVazoes.getVazaoAnual(id=id)		# Retorna uma lista com a vazão anual.
+	vaz_mensal = HistoricoVazao.getVazaoMensal(id=id)		# Retorna uma lista com a média da vazão mensal.
+	vaz_anual = HistoricoVazao.getVazaoAnual(id=id)		# Retorna uma lista com a vazão anual.
 	evap = HistoricoEvaporacao.getEvapMensal(id=id)			# Retorna uma lista com a evaporação mensal.
 
 	series_1 = [{											# Dicionário de dados para o Gráfico_1 vazão mensal.
@@ -88,7 +88,7 @@ def index3(request):
 
 
 def highchart_ex(request):
-	query_vazao = HistoricoVazoes.objects.filter(reservatorio=1)
+	query_vazao = HistoricoVazao.objects.filter(reservatorio=1)
 	query_reservatorio = Reservatorio.objects.filter(id=1)
 
 	vaz_anual = []

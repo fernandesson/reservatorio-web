@@ -20,9 +20,9 @@ class Reservatorio(models.Model):
         
 
 class HistoricoEvaporacao(models.Model):
-    mes = models.CharField(max_length=10)
+    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)
+    mes = models.CharField(max_length=30, blank=True, null=True)
     evaporacao = models.FloatField(blank=True, null=True)
-    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -42,14 +42,15 @@ class HistoricoEvaporacao(models.Model):
 
         return evap
 
-class HistoricoVazoes(models.Model):
-    data = models.DateField()
+class HistoricoVazao(models.Model):
+    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)
+    data = models.DateField(blank=True, null=True)
     vazao = models.FloatField(blank=True, null=True)
-    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
         managed = False
-        db_table = 'historico_vazoes'
+        db_table = 'historico_vazao'
 
     def getVazaoMensal(id):
         """ Calcula a média da vazão mensal de um reservatório.
@@ -57,7 +58,7 @@ class HistoricoVazoes(models.Model):
             return: (list) médias das vazões mensais, onde, indice 0 contém os valores de janeiro, índice 1, valores de fevereiro e assim por diante.
         """
 
-        query_vazao = HistoricoVazoes.objects.filter(reservatorio=id)   # Query com o id do resservatório.
+        query_vazao = HistoricoVazao.objects.filter(reservatorio=id)   # Query com o id do resservatório.
         vaz_mensal = list(range(12))				                    # Lista para armazenar a vazão mensal.
         for q in query_vazao:
             if q.vazao != -999:                                         # Verifica se existe dado.
@@ -98,7 +99,7 @@ class HistoricoVazoes(models.Model):
             return: (list) dados das vazões.
         """
         
-        query_vazao = HistoricoVazoes.objects.filter(reservatorio=id)   # Query com o id do reservatorio.
+        query_vazao = HistoricoVazao.objects.filter(reservatorio=id)   # Query com o id do reservatorio.
         vaz_anual = []								                    # Lista para armazenar as vazões.
         for x in query_vazao:						                    # Atribui o query a lista vazão.
             if x.vazao != -999:						                    # Verifica se o dado é válido.
@@ -107,22 +108,11 @@ class HistoricoVazoes(models.Model):
         return vaz_anual                                                # Retorna a lista.
 
 
-class ParametrosCav(models.Model):
-    a = models.FloatField(blank=True, null=True)
-    b = models.FloatField(blank=True, null=True)
-    c = models.FloatField(blank=True, null=True)
-    d = models.FloatField(blank=True, null=True)
-    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, primary_key=True)
-
-    class Meta:
-        managed = False
-        db_table = 'parametros_cav'
-
-
 class Volume(models.Model):
+    id = models.ForeignKey(Reservatorio, models.DO_NOTHING, db_column='id', primary_key=True)
     atual = models.FloatField(blank=True, null=True)
     total = models.FloatField(blank=True, null=True)
-    reservatorio = models.ForeignKey(Reservatorio, models.DO_NOTHING, primary_key=True)
+
 
     class Meta:
         managed = False

@@ -77,8 +77,8 @@ WSGI_APPLICATION = 'sistema.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-#mysql://USER:PASSWORD@HOST:PORT/NAME
-default_dburl ='mysql://root:deha@localhost/db_reservatorio'
+#postgres://USER:PASSWORD@HOST:PORT/NAME
+default_dburl ='postgres://postgres:deha@localhost/db_reservatorio'
 DATABASES = {'default':config('DATABASE_URL',default=default_dburl,cast=dburl),}
 
 
