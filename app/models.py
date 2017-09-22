@@ -13,20 +13,23 @@ from django.db import models
 class Reservatorio(models.Model):
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=30)
-
+    volume_atual = models.FloatField()                                                                                                                                                    
+    volume_total = models.FloatField()
     class Meta:
         managed = False
         db_table = 'reservatorio'
         
 
-class HistoricoEvaporacao(models.Model):
-    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)
-    mes = models.CharField(max_length=30, blank=True, null=True)
-    evaporacao = models.FloatField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'historico_evaporacao'
+class HistoricoEvaporacao(models.Model):                                                                                                                                                  
+    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)                                                                                            
+    mes = models.CharField(max_length=10)                                                                                                                                                 
+    evaporacao = models.FloatField()                                                                                                                                                      
+                                                                                                                                                                                          
+    class Meta:                                                                                                                                                                           
+        managed = False                                                                                                                                                                   
+        db_table = 'historico_evaporacao'           
+
 
     def getEvapMensal(id):            
         """ Retorna a evaporação mensal de um reservatório, se existir.
@@ -42,15 +45,16 @@ class HistoricoEvaporacao(models.Model):
 
         return evap
 
-class HistoricoVazao(models.Model):
-    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)
-    data = models.DateField(blank=True, null=True)
-    vazao = models.FloatField(blank=True, null=True)
-    id = models.BigAutoField(primary_key=True)
 
-    class Meta:
-        managed = False
+class HistoricoVazao(models.Model):                                                                                                                                                       
+    reservatorio = models.ForeignKey('Reservatorio', models.DO_NOTHING, blank=True, null=True)                                                                                            
+    data = models.DateField()                                                                                                                                                             
+    vazao = models.FloatField()                                                                                                                                                           
+                                                                                                                                                                                          
+    class Meta:                                                                                                                                                                           
+        managed = False                                                                                                                                                                   
         db_table = 'historico_vazao'
+
 
     def getVazaoMensal(id):
         """ Calcula a média da vazão mensal de um reservatório.

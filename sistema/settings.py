@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',default=False,cast=bool)
 
-ALLOWED_HOSTS = ['reservatorio-web.herokuapp.com','localhost']
+ALLOWED_HOSTS = ['web-reservatorio.herokuapp.com','localhost']
 
 
 # Application definition
