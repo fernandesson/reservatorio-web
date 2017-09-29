@@ -1,14 +1,15 @@
 Highcharts.chart('container3', {
     
         chart: {
-            type: 'column'
+            type: 'column',
+            backgroundColor:'rgba(255, 255, 255, 0.0)'
         },
         title: {
             text: 'Evaporação Mensal'
         },
     
         subtitle: {
-            text: ''
+            text: '1912 a 2012'
         },
     
         yAxis: {

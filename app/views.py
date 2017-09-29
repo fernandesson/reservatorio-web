@@ -6,16 +6,39 @@ from .models import Reservatorio, HistoricoVazao, HistoricoEvaporacao, Volume
 
 
 def index(request):
-	query_reservatorio = Reservatorio.objects.all()
-	if request.method == 'POST':
-		id_nome = request.POST.get('name_list')
-		query_vazao = HistoricoVazao.objects.filter(reservatorio=id_nome)
-		query_reservatorio = Reservatorio.objects.filter(id=id_nome)
-		nome_reservatorio = query_reservatorio[0].nome
-		return render(request, 'app/index.html', {'query_reservatorio': query_reservatorio, 'query_vazao': query_vazao})
-	else:
-		return render(request, 'app/index.html', {'query_reservatorio': query_reservatorio})
+	""" Apresenta 3 gráficos, Vazão e Evaporação mensal, e vazão annual de um reservatório selecionado.
+	"""
 
+	if request.method == 'POST':							# Verifica se houve requisição
+		id = request.POST.get('name_list')					# Pega o reservatório selecionado.
+	else:
+		id = 1												# Id padrão para abertura da página.
+
+	query_reservatorio_all = Reservatorio.objects.all()				# Pega todos os reservatórios.
+	query_reservatorio = Reservatorio.objects.filter(id=id)			# Pega o reservatório da id selecionada.
+	
+	name = query_reservatorio[0].nome						# Pega o nome do reservatório.
+
+	vaz_mensal = HistoricoVazao.getVazaoMensal(id=id)		# Retorna uma lista com a média da vazão mensal.
+	vaz_anual = HistoricoVazao.getVazaoAnual(id=id)		# Retorna uma lista com a vazão anual.
+	evap = HistoricoEvaporacao.getEvapMensal(id=id)			# Retorna uma lista com a evaporação mensal.
+
+	series_1 = [{											# Dicionário de dados para o Gráfico_1 vazão mensal.
+		"name": name,
+		"data": vaz_mensal
+	}]
+
+	series_2 = [{											# Grafico_2 Vazao Anual.
+		"name": name,
+		"data": vaz_anual
+	}]
+
+	series_3 = [{											# Grafico_3 Evaporação Mensal.
+		"name": name,
+		"data": evap
+	}]
+
+	return render(request, 'app/index.html', {'series_1': series_1, 'series_2': series_2, 'series_3': series_3, 'query_reservatorio_all': query_reservatorio_all})
 
 def download(request):
 	""" Gera um .csv com os dados do reservatorio selecionado

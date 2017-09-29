@@ -1,7 +1,8 @@
 Highcharts.chart('container1', {
 
 	chart: {
-		type: 'column'
+        type: 'column',
+        backgroundColor:'rgba(255, 255, 255, 0.0)'
 	},
     title: {
         text: 'Vazão Média Mensal'

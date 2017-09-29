@@ -1,7 +1,8 @@
 Highcharts.chart('container2', {
 
 	chart: {
-		zoomType: 'x'
+        zoomType: 'x',
+        backgroundColor:'rgba(255, 255, 255, 0.0)'
 	},
     title: {
         text: 'Vazão'
@@ -28,7 +29,7 @@ Highcharts.chart('container2', {
     plotOptions: {
         series: {
             pointStart: Date.UTC(1912, 0, 1),
-			pointInterval: 24*3600*1000*30
+            pointInterval: 24*3600*1000*30
         }
     },
 
