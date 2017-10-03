@@ -41,6 +41,21 @@ def index(request):
 	return render(request, 'app/index.html', {'series_1': series_1, 'series_2': series_2, 'series_3': series_3, 'query_reservatorio_all': query_reservatorio_all})
 
 def download(request):
+
+	if request.method == 'POST':							# Verifica se houve requisição
+		id = request.POST.get('name_list')					# Pega o reservatório selecionado.
+	else:
+		id = 1												# Id padrão para abertura da página.
+
+	query_reservatorio_all = Reservatorio.objects.all()				# Pega todos os reservatórios.
+	query_reservatorio = Reservatorio.objects.filter(id=id)			# Pega o reservatório da id selecionada.
+	
+	name = query_reservatorio[0].nome						# Pega o nome do reservatório.
+
+
+	return render(request, 'app/download.html', {'query_reservatorio_all': query_reservatorio_all})
+
+def download_csv(request):
 	""" Gera um .csv com os dados do reservatorio selecionado
 	"""
 	if request.method == 'POST':									# Verifica se houve requisição
@@ -51,9 +66,8 @@ def download(request):
 	query_reservatorio = Reservatorio.objects.filter(id=id)			# Pega o reservatório da id selecionada.
 	query_vazao = HistoricoVazao.objects.filter(reservatorio=id)	# Pega o reservatório da id selecionada.
 	query_evap = HistoricoEvaporacao.objects.filter(reservatorio=id)
-	query_volume = Volume.objects.filter(reservatorio=id)
 	response = HttpResponse(content_type='text/csv')
-	response['Content-Disposition'] = 'attachment; filename="vazao.csv"'
+	response['Content-Disposition'] = 'attachment; filename="dados_reservatorio.csv"'
 	
 	writer = csv.writer(response)
 	writer.writerow([query_reservatorio[0].nome, "Dados da Evaporação e Volume no fim do arquivo"])
@@ -68,8 +82,8 @@ def download(request):
 
 	writer.writerow([''])
 	writer.writerow(['Volume Atual', 'Volume Total'])
-	for q in query_volume:
-		writer.writerow([q.atual, q.total])
+	for q in query_reservatorio:
+		writer.writerow([q.volume_atual, q.volume_total])
 
 	return response
 
