@@ -110,14 +110,3 @@ class HistoricoVazao(models.Model):
                 vaz_anual.append(x.vazao)			                    # Atribui a lista.
 
         return vaz_anual                                                # Retorna a lista.
-
-
-class Volume(models.Model):
-    id = models.ForeignKey(Reservatorio, models.DO_NOTHING, db_column='id', primary_key=True)
-    atual = models.FloatField(blank=True, null=True)
-    total = models.FloatField(blank=True, null=True)
-
-
-    class Meta:
-        managed = False
-        db_table = 'volume'
